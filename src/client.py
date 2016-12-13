@@ -1,10 +1,11 @@
 """Local TCP/IP client to send/receive messages to local server."""
 
+from __future__ import print_function
 import socket
 import time
 
-message = "This is an über secret special information about what happens at the CF office after midnight! Please treat with Confidentiality!"
-
+# message = "This is an über secret special information about what happens at the CF office after midnight! Please treat with Confidentiality!"
+# message = "¥mes¢sage"
 
 def client(message):
     """Sends a message to a local server and ideally recieves the same message back."""
@@ -42,6 +43,6 @@ def client(message):
     client.close()
     return final_message
 
-client(message)
+# client(message)
 
 #This is an über secret special information about what happens at the CF office after midnight! Please treat with Confidentiality!")

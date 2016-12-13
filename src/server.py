@@ -2,6 +2,8 @@
 
 import socket
 import logging
+import time
+from __future__ import print_function
 
 def main():
     """Calls server."""
@@ -25,6 +27,7 @@ def set_server():
 
 def handle_message(conn, buffer_length):
     """Handles the messages coming into the server."""
+    conn.setblocking(1)
     message = []
     message_complete = False
     while not message_complete:
@@ -33,6 +36,7 @@ def handle_message(conn, buffer_length):
         print('Receiving message from client...')
         print('consuming: ', len(part))
         print(message[-1])
+        time.sleep(0.3)
         if len(part) < buffer_length:
             print('setting message to complete: ')
             message_complete = True
