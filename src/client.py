@@ -1,8 +1,8 @@
 """Local TCP/IP client to send/receive messages to local server."""
 
-from __future__ import print_function
 import socket
 import time
+import sys
 
 
 def client(message):
@@ -43,4 +43,7 @@ def client(message):
     client.close()
     return final_message
 
-# client(message)
+
+if __name__ == '__main__':
+    message = sys.argv[1]
+    print(client(message))

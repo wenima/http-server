@@ -50,7 +50,7 @@ def handle_message(conn, buffer_length):
 
 
 def server():
-    """Initiate the server, binds the server to an address defined above, listens and accepts new connections."""
+    """Start the server binds the server to an address listens and accepts."""
     print('entering server')
     buffer_length = 8
     address = set_address()
