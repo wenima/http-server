@@ -7,8 +7,9 @@ import time
 # message = "This is an über secret special information about what happens at the CF office after midnight! Please treat with Confidentiality!"
 # message = "¥mes¢sage"
 
+
 def client(message):
-    """Sends a message to a local server and ideally recieves the same message back."""
+    """Send a message to a local server and ideally recieves the same message back."""
     infos = socket.getaddrinfo('127.0.0.1', 5000)
     stream_info = [i for i in infos if i[1] == socket.SOCK_STREAM][0]
     client = socket.socket(*stream_info[:3])
@@ -19,13 +20,13 @@ def client(message):
     reply_complete = False
     client.setblocking(0)
     server_message = []
-    begin=time.time()
+    begin = time.time()
     timeout = 2
     time.sleep(0.1)
     while not reply_complete:
-        if message and time.time()-begin > timeout:
+        if message and time.time() - begin > timeout:
             break
-        elif time.time()-begin > timeout*2:
+        elif time.time() - begin > timeout * 2:
             break
         part = client.recv(buffer_length)
         if part:
@@ -45,4 +46,4 @@ def client(message):
 
 # client(message)
 
-#This is an über secret special information about what happens at the CF office after midnight! Please treat with Confidentiality!")
+# This is an über secret special information about what happens at the CF office after midnight! Please treat with Confidentiality!")
