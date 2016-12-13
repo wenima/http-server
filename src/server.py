@@ -4,6 +4,25 @@ import socket
 import time
 import sys
 import os
+import email.utils
+
+
+def response_ok():
+    """Return a well formed HTTP 200 OK response."""
+    response = 'HTTP/1.1 200 OK\r\n'
+    response += 'Content-Type: text/plain\r\n'
+    response += 'Date: ' + email.utils.formatdate(usegmt=True) + '\r\n'
+    response += 'This is the response body'
+    return response.encode('utf-8')
+
+
+def response_error():
+    """Return a well formed HTTP 500 Internal Server Error response."""
+    response = 'HTTP/1.1 500 Internal Server Error\r\n'
+    response += 'Content-Type: text/plain\r\n'
+    response += 'Date: ' + email.utils.formatdate(usegmt=True) + '\r\n'
+    response += 'This is the response body'
+    return response.encode('utf-8')
 
 
 def main():
