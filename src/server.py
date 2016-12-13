@@ -21,26 +21,29 @@ def set_server():
 
 
 def handle_message(conn, buffer_length):
-    message = ''
+    message = []
     message_complete = False
     while not message_complete:
         part = conn.recv(buffer_length)
-        message += part.decode('utf8')
-        print('message: ', message)
-        print('len part: ', len(part))
-        print('buffer_length: ', buffer_length)
+        message.append(part.decode('utf8'))
+        print('Receiving message from client...')
+        print('consuming: ', len(part))
+        print(message[-1])
         if len(part) < buffer_length:
             print('setting message to complete: ')
             message_complete = True
             break
-    print('return message: ', message)
-    return message
+        else:
+            print('Hold on, there is more...Receiving...')
+    full_message = ''.join(message)
+    print('return message: ', full_message)
+    return full_message
 
 def server():
     """Initiates the server, binds the server to an address defined above,
     listens and accepts new connections."""
     print('entering server')
-    buffer_length = 2048
+    buffer_length = 8
     address = set_address()
     print('address set to: ', address)
     server = set_server()
