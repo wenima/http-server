@@ -1,32 +1,33 @@
-"""Small localtcp/ip server to host connections from local client"""
+"""Small localtcp/ip server to host connections from local client."""
 
 import socket
-import logging
 import time
-from __future__ import print_function
+import sys
+import os
+
 
 def main():
-    """Calls server."""
+    """Call server."""
     server()
 
 
 def set_address():
-    """Sets the adress."""
+    """Set the adress."""
     address = ('127.0.0.1', 5000)
     return address
 
 
 def set_server():
-    """Instantiates the socket object."""
+    """Instantiate the socket object."""
     server = socket.socket(socket.AF_INET,
-                    socket.SOCK_STREAM,
-                    socket.IPPROTO_TCP)
+                           socket.SOCK_STREAM,
+                           socket.IPPROTO_TCP)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     return server
 
 
 def handle_message(conn, buffer_length):
-    """Handles the messages coming into the server."""
+    """Handle the messages coming into the server."""
     conn.setblocking(1)
     message = []
     message_complete = False
@@ -47,9 +48,9 @@ def handle_message(conn, buffer_length):
     print('return message: ', full_message)
     return full_message
 
+
 def server():
-    """Initiates the server, binds the server to an address defined above,
-    listens and accepts new connections."""
+    """Initiate the server, binds the server to an address defined above, listens and accepts new connections."""
     print('entering server')
     buffer_length = 8
     address = set_address()
@@ -75,7 +76,6 @@ def server():
         print('Still listening...(Control + C to stop server)')
         conn.close()
     print('end: ', message)
-
 
 
 if __name__ == '__main__':

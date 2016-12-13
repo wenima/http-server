@@ -4,17 +4,16 @@ from __future__ import print_function
 import socket
 import time
 
-# message = "This is an über secret special information about what happens at the CF office after midnight! Please treat with Confidentiality!"
-# message = "¥mes¢sage"
-
 
 def client(message):
-    """Send a message to a local server and ideally recieves the same message back."""
+    """Send a message to the local server echos back the same message."""
     infos = socket.getaddrinfo('127.0.0.1', 5000)
     stream_info = [i for i in infos if i[1] == socket.SOCK_STREAM][0]
     client = socket.socket(*stream_info[:3])
     client.connect(stream_info[-1])
-    print('sending the following message:', message, 'to server at: ', socket.gethostbyname('127.0.0.1'))
+    print('sending the following message:',
+          message, 'to server at: ',
+          socket.gethostbyname('127.0.0.1'))
     client.sendall(message.encode('utf8'))
     buffer_length = 8
     reply_complete = False
@@ -45,5 +44,3 @@ def client(message):
     return final_message
 
 # client(message)
-
-# This is an über secret special information about what happens at the CF office after midnight! Please treat with Confidentiality!")
