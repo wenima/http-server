@@ -1,9 +1,9 @@
 """Small localtcp/ip server to host connections from local client"""
-
+from __future__ import print_function
 import socket
 import logging
 import time
-from __future__ import print_function
+
 
 def main():
     """Calls server."""
