@@ -67,31 +67,6 @@ def server():
 
 
 
-
-
-            #
-            # message = ''
-            # message_complete = True
-            # while message_complete:
-            #         buffer_length = 8
-            #         message_complete = False
-            #         while not message_complete:
-            #             part = conn.recv(buffer_length)
-            #     # print(part.decode('utf8'))
-            #             message += part.decode('utf8')
-            #             print(message)
-            #             print(buffer_length)
-            #             print(len(part))
-            #             if len(part) < buffer_length:
-            #                 break
-            #                 message_complete = False
-        #     conn.sendall(message.encode('utf8'))
-        #     conn.close()
-        # except KeyboardInterrupt:
-        #     server.close()
-
-
-
 if __name__ == '__main__':
     try:
         main()
