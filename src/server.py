@@ -1,18 +1,21 @@
-"""Server."""
+"""Small localtcp/ip server to host connections from local client"""
 
 import socket
 import logging
 
 def main():
+    """Calls server."""
     server()
 
 
 def set_address():
+    """Sets the adress."""
     address = ('127.0.0.1', 5000)
     return address
 
 
 def set_server():
+    """Instantiates the socket object."""
     server = socket.socket(socket.AF_INET,
                     socket.SOCK_STREAM,
                     socket.IPPROTO_TCP)
@@ -21,6 +24,7 @@ def set_server():
 
 
 def handle_message(conn, buffer_length):
+    """Handles the messages coming into the server."""
     message = []
     message_complete = False
     while not message_complete:

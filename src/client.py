@@ -1,4 +1,4 @@
-"""Client side."""
+"""Local TCP/IP client to send/receive messages to local server."""
 
 import socket
 import time
@@ -7,7 +7,7 @@ message = "This is an über secret special information about what happens at the
 
 
 def client(message):
-    """Client function."""
+    """Sends a message to a local server and ideally recieves the same message back."""
     infos = socket.getaddrinfo('127.0.0.1', 5000)
     stream_info = [i for i in infos if i[1] == socket.SOCK_STREAM][0]
     client = socket.socket(*stream_info[:3])
