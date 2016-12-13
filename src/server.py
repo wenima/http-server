@@ -1,3 +1,4 @@
+# encoding: utf-8
 """Small localtcp/ip server to host connections from local client."""
 
 import socket

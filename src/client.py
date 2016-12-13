@@ -1,3 +1,4 @@
+# encoding: utf-8
 """Local TCP/IP client to send/receive messages to local server."""
 
 import socket
