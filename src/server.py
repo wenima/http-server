@@ -21,7 +21,7 @@ def response_error():
     response = 'HTTP/1.1 500 Internal Server Error\r\n'
     response += 'Content-Type: text/plain\r\n'
     response += 'Date: ' + email.utils.formatdate(usegmt=True) + '\r\n'
-    return response.encode('utf-8')
+    return response
 
 
 def main():
