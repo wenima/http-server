@@ -45,4 +45,4 @@ def client(message):
 
 if __name__ == '__main__':
     message = sys.argv[1]
-    print(client(message))
+    client(message)
