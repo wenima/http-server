@@ -31,7 +31,6 @@ def client(message):
         if part:
             server_message.append(part.decode('utf8'))
             print('Receiving message from server...')
-            print(server_message[-1])
             begin = time.time()
             time.sleep(0.1)
         if len(part) < buffer_length:

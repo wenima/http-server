@@ -13,8 +13,7 @@ def response_ok():
     response = 'HTTP/1.1 200 OK\r\n'
     response += 'Content-Type: text/plain\r\n'
     response += 'Date: ' + email.utils.formatdate(usegmt=True) + '\r\n'
-    response += 'This is the response body'
-    return response.encode('utf-8')
+    return response
 
 
 def response_error():
@@ -22,7 +21,6 @@ def response_error():
     response = 'HTTP/1.1 500 Internal Server Error\r\n'
     response += 'Content-Type: text/plain\r\n'
     response += 'Date: ' + email.utils.formatdate(usegmt=True) + '\r\n'
-    response += 'This is the response body'
     return response.encode('utf-8')
 
 
@@ -66,7 +64,7 @@ def handle_message(conn, buffer_length):
             print('Hold on, there is more...Receiving...')
     full_message = ''.join(message)
     print('return message: ', full_message)
-    return full_message
+    return response_ok() + full_message
 
 
 def server():
