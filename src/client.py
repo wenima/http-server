@@ -18,7 +18,6 @@ def client(message):
     client.sendall(message.encode('utf8'))
     buffer_length = 8
     reply_complete = False
-    client.setblocking(0)
     server_message = []
     begin = time.time()
     timeout = 2
