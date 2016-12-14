@@ -64,7 +64,10 @@ def handle_message(conn, buffer_length):
             print('Hold on, there is more...Receiving...')
     full_message = ''.join(message)
     print('return message: ', full_message)
-    return response_ok() + full_message
+    if full_message == 'error':
+        return response_error()
+    else:
+        return response_ok() + full_message
 
 
 def server():
