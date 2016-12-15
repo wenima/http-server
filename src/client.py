@@ -23,7 +23,8 @@ def client(message):
     else:
         client.sendall(message + b'\r\n')
     reply_complete = False
-    server_message = []
+    # server_message = []
+    server_message = b''
     begin = time.time()
     timeout = 2
     time.sleep(0.1)
@@ -34,10 +35,7 @@ def client(message):
             break
         part = client.recv(buffer_length)
         if part:
-            if sys.version[0] == '3':
-                server_message.append(str(part, 'utf8'))
-            else:
-                server_message.append(part.decode('utf8'))
+            server_message += part
             print('Receiving message from server...')
             print(server_message[-1])
             begin = time.time()
@@ -46,7 +44,7 @@ def client(message):
             break
         else:
             print('Hold on, there is more...Receiving...')
-    final_message = ''.join(server_message)
+    final_message = str(server_message)
     print('The full message is: ', final_message)
     client.close()
     return final_message
