@@ -18,7 +18,10 @@ def client(message):
     print('sending the following message:',
           message, 'to server at: ',
           socket.gethostbyname('127.0.0.1'))
-    client.sendall(message.encode('utf8') + b'\r\n')
+    if sys.version[0] == '3':
+        client.sendall(message.encode('utf8') + b'\r\n')
+    else:
+        client.sendall(message + b'\r\n')
     reply_complete = False
     server_message = []
     begin = time.time()
