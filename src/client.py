@@ -45,7 +45,6 @@ def client(message):
         else:
             print('Hold on, there is more...Receiving...')
     final_message = str(server_message)
-    print('The full message is: ', final_message)
     client.close()
     return final_message
 
