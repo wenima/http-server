@@ -67,7 +67,7 @@ def handle_message(conn, buffer_length):
     if full_message == 'error':
         return response_error()
     else:
-        return response_ok() + full_message
+        return response_ok().encode('utf8') + full_message
 
 
 def server():
