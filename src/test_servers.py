@@ -17,4 +17,4 @@ MESSAGES = [
 def test_client(message, output):
     """Test returns messages shorter than one buffer in length."""
     from client import client
-    assert client(message) == output[:-2]
+    assert client(message)[:-2] == output
