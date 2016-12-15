@@ -6,6 +6,9 @@ import time
 import sys
 
 
+buffer_length = 8
+
+
 def client(message):
     """Send a message to the local server echos back the same message."""
     infos = socket.getaddrinfo('127.0.0.1', 5000)
@@ -16,12 +19,9 @@ def client(message):
           message, 'to server at: ',
           socket.gethostbyname('127.0.0.1'))
     if sys.version[0] == '3':
-        print(message.encode('utf8') + b'\r\n')
         client.sendall(message.encode('utf8') + b'\r\n')
     else:
-        print(message.encode('utf8') + b'\r\n')
-        client.sendall(str(message))
-    buffer_length = 8
+        client.sendall(message + b'\r\n')
     reply_complete = False
     server_message = []
     begin = time.time()

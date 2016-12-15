@@ -11,7 +11,7 @@ setup(
     author_email='',
     license="MIT",
     package_dir={'': 'src'},
-    py_modules=['server.py, client.py'],
+    py_modules=['server', 'client'],
     extras_require={
         "test": ["pytest", "pytest-watch", "pytest-cov", "tox"]
     },

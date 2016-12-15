@@ -2,7 +2,6 @@
 """Small localtcp/ip server to host connections from local client."""
 
 import socket
-import time
 import sys
 import os
 import email.utils
@@ -54,7 +53,6 @@ def handle_message(conn, buffer_length):
         message += part
         print('Receiving message from client...')
         print('consuming: ', len(part))
-        time.sleep(0.3)
         print(message[-2:])
         if len(part) < buffer_length or part[-2:] == b'\r\n':
             print('setting message to complete: ')
@@ -75,7 +73,6 @@ def server():
     print('entering server')
     buffer_length = 8
     address = set_address()
-    print('address set to: ', address)
     server = set_server()
     server.bind(address)
     server.listen(1)
@@ -87,7 +84,6 @@ def server():
             message = handle_message(conn, buffer_length)
         except KeyboardInterrupt:
             print('Shutting down...')
-            print('Goodbye.')
             conn.close()
             server.close()
             exit()
