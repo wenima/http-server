@@ -47,22 +47,22 @@ def set_server():
 def handle_message(conn, buffer_length):
     """Handle the messages coming into the server."""
     conn.setblocking(1)
-    message = []
+    message = b''
     message_complete = False
     while not message_complete:
         part = conn.recv(buffer_length)
-        message.append(part.decode('utf8'))
+        message += part
         print('Receiving message from client...')
         print('consuming: ', len(part))
-        print(message[-1])
         time.sleep(0.3)
-        if len(part) < buffer_length:
+        print(message[-2:])
+        if len(part) < buffer_length or part[-2:] == b'\r\n':
             print('setting message to complete: ')
             message_complete = True
             break
         else:
             print('Hold on, there is more...Receiving...')
-    full_message = ''.join(message)
+    full_message = message
     print('return message: ', full_message)
     if full_message == 'error':
         return response_error()
@@ -92,7 +92,7 @@ def server():
             server.close()
             exit()
         print('Echoing message back: ')
-        conn.sendall(message.encode('utf8'))
+        conn.sendall(message)
         print('Closing connection for: ', addr)
         print('Still listening...(Control + C to stop server)')
         conn.close()
