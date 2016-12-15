@@ -15,7 +15,10 @@ def client(message):
     print('sending the following message:',
           message, 'to server at: ',
           socket.gethostbyname('127.0.0.1'))
-    client.sendall(message.encode('utf8'))
+    if sys.version[0] == '3':
+        client.sendall(message.encode('utf8'))
+    else:
+        client.sendall(str(message))
     buffer_length = 8
     reply_complete = False
     server_message = []
@@ -29,7 +32,10 @@ def client(message):
             break
         part = client.recv(buffer_length)
         if part:
-            server_message.append(part.decode('utf8'))
+            if sys.version[0] == '3':
+                server_message.append(str(part, 'utf8'))
+            else:
+                server_message.append(part.decode('utf8'))
             print('Receiving message from server...')
             print(server_message[-1])
             begin = time.time()

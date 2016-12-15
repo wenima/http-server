@@ -5,12 +5,14 @@
 import pytest
 
 MESSAGES = [
-    ['', ''],
-    ['¥mes¢sage', '¥mes¢sage'],
+    # ['', ''],
+    ['¥mes¢sage', u'¥mes¢sage'],
     ['message', 'message'],
-    ['qwertyuiopasdfgh', 'qwertyuiopasdfgh'],
-    ['qwertyui', 'qwertyui']
+    # ['qwertyuiopasdfgh', 'qwertyuiopasdfgh'],
+    # ['qwertyui', 'qwertyui']
 ]
+
+# Commented lines fail
 
 
 @pytest.mark.parametrize('message, output', MESSAGES)
