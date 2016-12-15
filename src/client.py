@@ -15,12 +15,7 @@ def client(message):
     print('sending the following message:',
           message, 'to server at: ',
           socket.gethostbyname('127.0.0.1'))
-    if sys.version[0] == '3':
-        print(message.encode('utf8') + b'\r\n')
-        client.sendall(message.encode('utf8') + b'\r\n')
-    else:
-        print(message.encode('utf8') + b'\r\n')
-        client.sendall(str(message))
+    client.sendall(message.encode('utf8') + b'\r\n')
     buffer_length = 8
     reply_complete = False
     server_message = []
