@@ -41,3 +41,42 @@ def test_server_response_error():
     assert response_split[1] == '500'
     assert response_split[2] + response_split[3] + response_split[4] == 'InternalServerError'
     assert response_error()[-2:] == '\r\n'
+
+
+def test_parse_request():
+    """Test parse_request returns URI."""
+    from server import parse_request
+    proper_get_request = 'GET\r\n/index.html\r\nHTTP/1.1\r\nHost: www.example.com\r\n'
+    assert parse_request(proper_get_request) == '/index.html'
+
+
+def test_parse_request_exeption_wrong_method():
+    """Test parse_request raises ValueError exception when wrong method."""
+    from server import parse_request
+    bad_get_request = 'POST\r\n/index.html\r\nHTTP/1.1\r\nHost: www.example.com\r\n'
+    with pytest.raises(ValueError, message="Method is wrong"):
+        parse_request(bad_get_request)
+
+
+def test_parse_request_exeption_wrong_path():
+    """Test parse_request raises ValueError exception when wrong path."""
+    from server import parse_request
+    bad_get_request = 'GET\r\n/indx.html\r\nHTTP/1.1\r\nHost: www.example.com\r\n'
+    with pytest.raises(ValueError, message="Path is wrong."):
+        parse_request(bad_get_request)
+
+
+def test_parse_request_exeption_wrong_version():
+    """Test parse_request raises ValueError exception when wrong version."""
+    from server import parse_request
+    bad_get_request = 'GET\r\n/index.html\r\nHTTP/1.5\r\nHost: www.example.com\r\n'
+    with pytest.raises(ValueError, message="HTTP version is wrong."):
+        parse_request(bad_get_request)
+
+
+def test_parse_request_exeption_wrong_host():
+    """Test parse_request raises ValueError exception."""
+    from server import parse_request
+    bad_get_request = 'GET\r\n/index.html\r\nHTTP/1.1\r\nHost: www.ht.com\r\n'
+    with pytest.raises(ValueError, message="Host is wrong."):
+        parse_request(bad_get_request)

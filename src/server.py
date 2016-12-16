@@ -98,7 +98,6 @@ def server():
 if __name__ == '__main__':
     try:
         main()
-        # server()
     except KeyboardInterrupt:
         print('Keyboard interrupted, shutting down server...')
         server.close()
