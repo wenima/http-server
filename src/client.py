@@ -44,9 +44,11 @@ def client(message):
             break
         else:
             print('Hold on, there is more...Receiving...')
-    final_message = str(server_message)
     client.close()
-    return final_message
+    if sys.version[0] == '3':
+        return str(server_message, 'utf8')
+    else:
+        return str(server_message)
 
 
 if __name__ == '__main__':
