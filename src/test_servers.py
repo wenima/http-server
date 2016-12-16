@@ -72,7 +72,7 @@ def test_parse_request_exeption_wrong_method():
 def test_parse_request_exeption_wrong_path():
     """Test parse_request raises ValueError exception when wrong path."""
     from server import parse_request
-    bad_get_request = 'GET /indx.html HTTP/1.1\r\nHost: www.example.com\r\n'
+    bad_get_request = 'GET /indx.html HTTP/1.1\r\nHost: 127.0.0.1\r\n'
     with pytest.raises(ValueError, message="404: ('Not Found', 'Nothing matches the given URI')"):
         parse_request(bad_get_request)
 
@@ -80,7 +80,7 @@ def test_parse_request_exeption_wrong_path():
 def test_parse_request_exeption_wrong_version():
     """Test parse_request raises ValueError exception when wrong version."""
     from server import parse_request
-    bad_get_request = 'GET /index.html HTTP/1.5\r\nHost: www.example.com\r\n'
+    bad_get_request = 'GET /index.html HTTP/1.5\r\nHost: 127.0.0.1\r\n'
     with pytest.raises(ValueError, message="505: ('HTTP Version Not Supported', 'Cannot fulfill request.')"):
         parse_request(bad_get_request)
 
