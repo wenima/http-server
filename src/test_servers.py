@@ -32,14 +32,25 @@ def test_server_response_ok():
     assert response_ok()[-2:] == '\r\n'
 
 
-def test_server_response_error():
+def test_server_response_error_500():
     """Test that the ERROR response is fully-formed proper response."""
     from server import response_error
-    full_response = response_error().split('\r\n')
+    full_response = response_error('500', 'Internal Server Error').split('\r\n')
     response_split = full_response[0].split()
     assert response_split[0][:-4] == 'HTTP'
     assert response_split[1] == '500'
     assert response_split[2] + response_split[3] + response_split[4] == 'InternalServerError'
+    assert response_error()[-2:] == '\r\n'
+
+
+def test_server_response_error_404():
+    """Test that the ERROR response is fully-formed proper response."""
+    from server import response_error
+    full_response = response_error('404', 'Not Found').split('\r\n')
+    response_split = full_response[0].split()
+    assert response_split[0][:-4] == 'HTTP'
+    assert response_split[1] == '500'
+    assert response_split[2] + response_split[3] == 'NotFound'
     assert response_error()[-2:] == '\r\n'
 
 
@@ -54,7 +65,7 @@ def test_parse_request_exeption_wrong_method():
     """Test parse_request raises ValueError exception when wrong method."""
     from server import parse_request
     bad_get_request = 'POST /index.html HTTP/1.1\r\nHost: www.example.com\r\n'
-    with pytest.raises(ValueError, message="Method is wrong"):
+    with pytest.raises(ValueError, message="405: ('Method Not Allowed'"):
         parse_request(bad_get_request)
 
 
@@ -62,7 +73,7 @@ def test_parse_request_exeption_wrong_path():
     """Test parse_request raises ValueError exception when wrong path."""
     from server import parse_request
     bad_get_request = 'GET /indx.html HTTP/1.1\r\nHost: www.example.com\r\n'
-    with pytest.raises(ValueError, message="Path is wrong."):
+    with pytest.raises(ValueError, message="404: ('Not Found', 'Nothing matches the given URI')"):
         parse_request(bad_get_request)
 
 
@@ -70,7 +81,7 @@ def test_parse_request_exeption_wrong_version():
     """Test parse_request raises ValueError exception when wrong version."""
     from server import parse_request
     bad_get_request = 'GET /index.html HTTP/1.5\r\nHost: www.example.com\r\n'
-    with pytest.raises(ValueError, message="HTTP version is wrong."):
+    with pytest.raises(ValueError, message="505: ('HTTP Version Not Supported', 'Cannot fulfill request.')"):
         parse_request(bad_get_request)
 
 
@@ -78,5 +89,5 @@ def test_parse_request_exeption_wrong_host():
     """Test parse_request raises ValueError exception."""
     from server import parse_request
     bad_get_request = 'GET /index.html HTTP/1.1\r\nHost: www.ht.com\r\n'
-    with pytest.raises(ValueError, message="Host is wrong."):
+    with pytest.raises(ValueError, message="400: ('Bad Request','Bad request syntax or unsupported method')"):
         parse_request(bad_get_request)
