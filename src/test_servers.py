@@ -65,7 +65,7 @@ def test_parse_request_exeption_wrong_method():
     """Test parse_request raises ValueError exception when wrong method."""
     from server import parse_request
     bad_get_request = 'POST /index.html HTTP/1.1\r\nHost: www.example.com\r\n'
-    with pytest.raises(ValueError, message="405: ('Method Not Allowed'"):
+    with pytest.raises(ValueError, message="405: ('Method Not Allowed)'"):
         parse_request(bad_get_request)
 
 
@@ -91,3 +91,18 @@ def test_parse_request_exeption_wrong_host():
     bad_get_request = 'GET /index.html HTTP/1.1\r\nHost: www.ht.com\r\n'
     with pytest.raises(ValueError, message="400: ('Bad Request','Bad request syntax or unsupported method')"):
         parse_request(bad_get_request)
+
+
+def test_resolve_uri_input_dir():
+    """Test resolve_uri with directory path returns html."""
+    from server import resolve_uri
+    output = resolve_uri('/webroot').split('\r\n')
+    assert output[3][-7:] == '</html>'
+    assert output[3][:15] == '<!DOCTYPE html>'
+
+
+def test_resolve_uri_input_file():
+    """Test resolve_uri with file path returns file (txt)."""
+    from server import resolve_uri
+    output = resolve_uri('/sample.txt').split('\r\n')
+    assert output[3] == u'This is a very simple text file.\nJust to show that we can serve it up.\nIt is three lines long.\n'
