@@ -45,6 +45,7 @@ def client(message):
         else:
             print('Hold on, there is more...Receiving...')
     client.close()
+    print('\n')
     if sys.version[0] == '3':
         return str(server_message, 'utf8')
     else:
@@ -53,4 +54,4 @@ def client(message):
 
 if __name__ == '__main__':
     message = sys.argv[1]
-    client(message)
+    print(client(message))
