@@ -6,7 +6,7 @@ import pytest
 
 MESSAGES = [
     ['', ''],
-    ['¥mes¢sage', u'¥mes¢sage'],
+    ['¥mes¢sage', '¥mes¢sage'],
     ['message', 'message'],
     ['qwertyuiopasdfgh', 'qwertyuiopasdfgh'],
     ['qwertyui', 'qwertyui']
