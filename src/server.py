@@ -7,6 +7,73 @@ import os
 import email.utils
 
 
+responses = {
+        100: ('Continue', 'Request received, please continue'),
+        101: ('Switching Protocols',
+              'Switching to new protocol; obey Upgrade header'),
+
+        200: ('OK', 'Request fulfilled, document follows'),
+        201: ('Created', 'Document created, URL follows'),
+        202: ('Accepted',
+              'Request accepted, processing continues off-line'),
+        203: ('Non-Authoritative Information', 'Request fulfilled from cache'),
+        204: ('No Content', 'Request fulfilled, nothing follows'),
+        205: ('Reset Content', 'Clear input form for further input.'),
+        206: ('Partial Content', 'Partial content follows.'),
+
+        300: ('Multiple Choices',
+              'Object has several resources -- see URI list'),
+        301: ('Moved Permanently', 'Object moved permanently -- see URI list'),
+        302: ('Found', 'Object moved temporarily -- see URI list'),
+        303: ('See Other', 'Object moved -- see Method and URL list'),
+        304: ('Not Modified',
+              'Document has not changed since given time'),
+        305: ('Use Proxy',
+              'You must use proxy specified in Location to access this '
+              'resource.'),
+        307: ('Temporary Redirect',
+              'Object moved temporarily -- see URI list'),
+
+        400: ('Bad Request',
+              'Bad request syntax or unsupported method'),
+        401: ('Unauthorized',
+              'No permission -- see authorization schemes'),
+        402: ('Payment Required',
+              'No payment -- see charging schemes'),
+        403: ('Forbidden',
+              'Request forbidden -- authorization will not help'),
+        404: ('Not Found', 'Nothing matches the given URI'),
+        405: ('Method Not Allowed',
+              'Specified method is invalid for this resource.'),
+        406: ('Not Acceptable', 'URI not available in preferred format.'),
+        407: ('Proxy Authentication Required', 'You must authenticate with '
+              'this proxy before proceeding.'),
+        408: ('Request Timeout', 'Request timed out; try again later.'),
+        409: ('Conflict', 'Request conflict.'),
+        410: ('Gone',
+              'URI no longer exists and has been permanently removed.'),
+        411: ('Length Required', 'Client must specify Content-Length.'),
+        412: ('Precondition Failed', 'Precondition in headers is false.'),
+        413: ('Request Entity Too Large', 'Entity is too large.'),
+        414: ('Request-URI Too Long', 'URI is too long.'),
+        415: ('Unsupported Media Type', 'Entity body in unsupported format.'),
+        416: ('Requested Range Not Satisfiable',
+              'Cannot satisfy request range.'),
+        417: ('Expectation Failed',
+              'Expect condition could not be satisfied.'),
+
+        500: ('Internal Server Error', 'Server got itself in trouble'),
+        501: ('Not Implemented',
+              'Server does not support this operation'),
+        502: ('Bad Gateway', 'Invalid responses from another server/proxy.'),
+        503: ('Service Unavailable',
+              'The server cannot process the request due to a high load'),
+        504: ('Gateway Timeout',
+              'The gateway server did not receive a timely response'),
+        505: ('HTTP Version Not Supported', 'Cannot fulfill request.'),
+        }
+
+
 def response_ok():
     """Return a well formed HTTP 200 OK response."""
     response = 'HTTP/1.1 200 OK\r\n'
@@ -15,12 +82,12 @@ def response_ok():
     return response
 
 
-def response_error():
-    """Return a well formed HTTP 500 Internal Server Error response."""
-    response = 'HTTP/1.1 500 Internal Server Error\r\n'
+def response_error(err_code):
+    """Return a well formed Error response."""
+    response = 'HTTP/1.1 {0} {1}\r\n'
     response += 'Content-Type: text/plain\r\n'
     response += 'Date: ' + email.utils.formatdate(usegmt=True) + '\r\n'
-    return response
+    return ''.join(response).format(err_code, responses[err_code])
 
 
 def main():
@@ -43,6 +110,41 @@ def set_server():
     return server
 
 
+def parse_request(message, conn):
+    requestline = message.rstrip('\r\n')
+    request_split = requestline.split()
+    command, path, version = request_split[0:3]
+    print(command, path, version)
+    if command != 'GET':
+        return response_error(405, "Bad HTTP/0.9 request type") #!fix message
+    elif 'HTTP/' not in version:
+        return response_error(400, "Bad HTTP/0.9 request type")
+    try:
+        version_number = version.split('/', 1)[1]
+        print(version_number)
+        if len(version_number) != 2 or version_number != '1.1':
+            print(response_error(505))
+            print('the next line should be an exception:')
+            raise ValueError
+            print('after valueerror')
+            return(response_error(505))
+        version_number = int(version_number[0]), int(version_number[1])
+    except ValueError: #!add more error handling for diff type
+        return ValueError("Test".encode('utf8'))
+    #     print(version)
+    #     #conn.sendall(responses[400][1] + "Bad request version " + version.encode('utf8'))
+    # if version_number >= (1, 1) and protocol.version  >= 'HTTP/1.1':
+    #     close_connection = 0
+    # if version_number >= (2, 0):
+    #     conn.sendall(responses[505], "Invalid HTTP Version ", version)
+    #     return False
+        return None
+    # else:
+    #     print(version)
+    #     return response_error(400)
+    return
+
+
 def handle_message(conn, buffer_length):
     """Handle the messages coming into the server."""
     conn.setblocking(1)
@@ -53,7 +155,7 @@ def handle_message(conn, buffer_length):
         message += part
         print('Receiving message from client...')
         print('consuming: ', len(part))
-        print(message[-2:])
+        print(message.decode('utf8'))
         if len(part) < buffer_length or part[-2:] == b'\r\n':
             print('setting message to complete: ')
             message_complete = True
@@ -61,17 +163,18 @@ def handle_message(conn, buffer_length):
         else:
             print('Hold on, there is more...Receiving...')
     full_message = message
-    print('return message: ', full_message)
-    if full_message == 'error':
-        return response_error()
+    print('parsing request...')
+    response = parse_request(message.decode('utf8'), conn)
+    if response is None:
+        return response
     else:
-        return response_ok().encode('utf8') + full_message
-
+        # return response_ok().encode('utf8') + full_message
+        return response
 
 def server():
     """Start the server binds the server to an address listens and accepts."""
     print('entering server')
-    buffer_length = 8
+    buffer_length = 1024
     address = set_address()
     server = set_server()
     server.bind(address)
@@ -88,7 +191,7 @@ def server():
             server.close()
             exit()
         print('Echoing message back: ')
-        conn.sendall(message)
+        conn.sendall(message.encode('utf8'))
         print('Closing connection for: ', addr)
         print('Still listening...(Control + C to stop server)')
         conn.close()
