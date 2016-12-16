@@ -57,14 +57,14 @@ def test_server_response_error_404():
 def test_parse_request():
     """Test parse_request returns URI."""
     from server import parse_request
-    proper_get_request = 'GET /index.html HTTP/1.1\r\nHost: www.example.com\r\n'
+    proper_get_request = 'GET /index.html HTTP/1.1\r\nHost: 127.0.0.1\r\n'
     assert parse_request(proper_get_request) == '/index.html'
 
 
 def test_parse_request_exeption_wrong_method():
     """Test parse_request raises ValueError exception when wrong method."""
     from server import parse_request
-    bad_get_request = 'POST /index.html HTTP/1.1\r\nHost: www.example.com\r\n'
+    bad_get_request = 'POST /index.html HTTP/1.1\r\nHost: 127.0.0.1\r\n'
     with pytest.raises(ValueError, message="405: ('Method Not Allowed'"):
         parse_request(bad_get_request)
 
