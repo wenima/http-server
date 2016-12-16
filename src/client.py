@@ -37,7 +37,7 @@ def client(message):
         if part:
             server_message += part
             print('Receiving message from server...')
-            print(server_message[-1])
+            print(part)
             begin = time.time()
             time.sleep(0.1)
         if len(part) < buffer_length:
