@@ -125,20 +125,13 @@ def parse_request(message, conn):
         if len(version_number) != 2 or version_number != '1.1':
             print(response_error(505))
             print('the next line should be an exception:')
-            raise ValueError
+            raise ValueError(response_error(505))
             print('after valueerror')
             return(response_error(505))
         version_number = int(version_number[0]), int(version_number[1])
     except ValueError: #!add more error handling for diff type
-        return ValueError("Test".encode('utf8'))
-    #     print(version)
-    #     #conn.sendall(responses[400][1] + "Bad request version " + version.encode('utf8'))
-    # if version_number >= (1, 1) and protocol.version  >= 'HTTP/1.1':
-    #     close_connection = 0
-    # if version_number >= (2, 0):
-    #     conn.sendall(responses[505], "Invalid HTTP Version ", version)
-    #     return False
-        return None
+        raise
+    return None
     # else:
     #     print(version)
     #     return response_error(400)
@@ -191,7 +184,11 @@ def server():
             server.close()
             exit()
         print('Echoing message back: ')
-        conn.sendall(message.encode('utf8'))
+        try:
+            conn.sendall(message.encode('utf8'))
+        except ValueError:
+            print('handling att error')
+            print(message)
         print('Closing connection for: ', addr)
         print('Still listening...(Control + C to stop server)')
         conn.close()
