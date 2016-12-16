@@ -32,14 +32,25 @@ def test_server_response_ok():
     assert response_ok()[-2:] == '\r\n'
 
 
-def test_server_response_error():
+def test_server_response_error_500():
     """Test that the ERROR response is fully-formed proper response."""
     from server import response_error
-    full_response = response_error().split('\r\n')
+    full_response = response_error('500', 'Internal Server Error').split('\r\n')
     response_split = full_response[0].split()
     assert response_split[0][:-4] == 'HTTP'
     assert response_split[1] == '500'
     assert response_split[2] + response_split[3] + response_split[4] == 'InternalServerError'
+    assert response_error()[-2:] == '\r\n'
+
+
+def test_server_response_error_404():
+    """Test that the ERROR response is fully-formed proper response."""
+    from server import response_error
+    full_response = response_error('404', 'Not Found').split('\r\n')
+    response_split = full_response[0].split()
+    assert response_split[0][:-4] == 'HTTP'
+    assert response_split[1] == '500'
+    assert response_split[2] + response_split[3] == 'NotFound'
     assert response_error()[-2:] == '\r\n'
 
 
