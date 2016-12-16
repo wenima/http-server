@@ -23,7 +23,6 @@ def client(message):
     else:
         client.sendall(message + b'\r\n')
     reply_complete = False
-    # server_message = []
     server_message = b''
     begin = time.time()
     timeout = 2
