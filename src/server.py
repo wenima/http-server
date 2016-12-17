@@ -5,6 +5,8 @@ import socket
 import sys
 import os
 import email.utils
+# import email
+# import io
 
 
 responses = {
@@ -100,6 +102,15 @@ def set_address():
     address = ('127.0.0.1', 5000)
     return address
 
+def read_address():
+    """Reads back the current IP adress."""
+    return set_address()
+
+def read_hostname():
+    server = set_server()
+    return server.gethostname()
+
+
 
 def set_server():
     """Instantiate the socket object."""
@@ -113,29 +124,20 @@ def set_server():
 def parse_request(message, conn):
     requestline = message.rstrip('\r\n')
     request_split = requestline.split()
-    command, path, version = request_split[0:3]
-    print(command, path, version)
-    if command != 'GET':
-        return response_error(405, "Bad HTTP/0.9 request type") #!fix message
-    elif 'HTTP/' not in version:
-        return response_error(400, "Bad HTTP/0.9 request type")
+    command, path, version, host, host_name = request_split
+    version_number = version.split('/', 1)[1]
     try:
-        version_number = version.split('/', 1)[1]
-        print(version_number)
-        if len(version_number) != 2 or version_number != '1.1':
-            print(response_error(505))
-            print('the next line should be an exception:')
-            raise ValueError(response_error(505))
-            print('after valueerror')
-            return(response_error(505))
-        version_number = int(version_number[0]), int(version_number[1])
-    except ValueError: #!add more error handling for diff type
+        if command != 'GET':
+            raise ValueError(405)
+        elif 'HTTP/' not in version:
+            raise ValueError(400)
+        elif len(version_number) != 3 or version_number != '1.1':
+                raise ValueError(505)
+        if host != 'Host:' or host_name != read_address()[0]:
+            raise ValueError(400)
+    except ValueError:
         raise
-    return None
-    # else:
-    #     print(version)
-    #     return response_error(400)
-    return
+    return path
 
 
 def handle_message(conn, buffer_length):
@@ -157,11 +159,13 @@ def handle_message(conn, buffer_length):
             print('Hold on, there is more...Receiving...')
     full_message = message
     print('parsing request...')
-    response = parse_request(message.decode('utf8'), conn)
-    if response is None:
-        return response
+    try:
+        response = parse_request(message.decode('utf8'), conn)
+    except ValueError as e:
+        return(response_error(*e.args))
     else:
         # return response_ok().encode('utf8') + full_message
+        print('Request OK')
         return response
 
 def server():
@@ -183,12 +187,11 @@ def server():
             conn.close()
             server.close()
             exit()
-        print('Echoing message back: ')
+        print('Sending response... ')
         try:
             conn.sendall(message.encode('utf8'))
-        except ValueError:
-            print('handling att error')
-            print(message)
+        except socket.error as se:
+            print('Something went wrong when attempting to send to client:', se)
         print('Closing connection for: ', addr)
         print('Still listening...(Control + C to stop server)')
         conn.close()
