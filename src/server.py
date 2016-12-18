@@ -5,75 +5,73 @@ import socket
 import sys
 import os
 import email.utils
-# import email
-# import io
 
 
 responses = {
-        100: ('Continue', 'Request received, please continue'),
-        101: ('Switching Protocols',
-              'Switching to new protocol; obey Upgrade header'),
+    100: ('Continue', 'Request received, please continue'),
+    101: ('Switching Protocols',
+          'Switching to new protocol; obey Upgrade header'),
 
-        200: ('OK', 'Request fulfilled, document follows'),
-        201: ('Created', 'Document created, URL follows'),
-        202: ('Accepted',
-              'Request accepted, processing continues off-line'),
-        203: ('Non-Authoritative Information', 'Request fulfilled from cache'),
-        204: ('No Content', 'Request fulfilled, nothing follows'),
-        205: ('Reset Content', 'Clear input form for further input.'),
-        206: ('Partial Content', 'Partial content follows.'),
+    200: ('OK', 'Request fulfilled, document follows'),
+    201: ('Created', 'Document created, URL follows'),
+    202: ('Accepted',
+          'Request accepted, processing continues off-line'),
+    203: ('Non-Authoritative Information', 'Request fulfilled from cache'),
+    204: ('No Content', 'Request fulfilled, nothing follows'),
+    205: ('Reset Content', 'Clear input form for further input.'),
+    206: ('Partial Content', 'Partial content follows.'),
 
-        300: ('Multiple Choices',
-              'Object has several resources -- see URI list'),
-        301: ('Moved Permanently', 'Object moved permanently -- see URI list'),
-        302: ('Found', 'Object moved temporarily -- see URI list'),
-        303: ('See Other', 'Object moved -- see Method and URL list'),
-        304: ('Not Modified',
-              'Document has not changed since given time'),
-        305: ('Use Proxy',
-              'You must use proxy specified in Location to access this '
-              'resource.'),
-        307: ('Temporary Redirect',
-              'Object moved temporarily -- see URI list'),
+    300: ('Multiple Choices',
+          'Object has several resources -- see URI list'),
+    301: ('Moved Permanently', 'Object moved permanently -- see URI list'),
+    302: ('Found', 'Object moved temporarily -- see URI list'),
+    303: ('See Other', 'Object moved -- see Method and URL list'),
+    304: ('Not Modified',
+          'Document has not changed since given time'),
+    305: ('Use Proxy',
+          'You must use proxy specified in Location to access this '
+          'resource.'),
+    307: ('Temporary Redirect',
+          'Object moved temporarily -- see URI list'),
 
-        400: ('Bad Request',
-              'Bad request syntax or unsupported method'),
-        401: ('Unauthorized',
-              'No permission -- see authorization schemes'),
-        402: ('Payment Required',
-              'No payment -- see charging schemes'),
-        403: ('Forbidden',
-              'Request forbidden -- authorization will not help'),
-        404: ('Not Found', 'Nothing matches the given URI'),
-        405: ('Method Not Allowed',
-              'Specified method is invalid for this resource.'),
-        406: ('Not Acceptable', 'URI not available in preferred format.'),
-        407: ('Proxy Authentication Required', 'You must authenticate with '
-              'this proxy before proceeding.'),
-        408: ('Request Timeout', 'Request timed out; try again later.'),
-        409: ('Conflict', 'Request conflict.'),
-        410: ('Gone',
-              'URI no longer exists and has been permanently removed.'),
-        411: ('Length Required', 'Client must specify Content-Length.'),
-        412: ('Precondition Failed', 'Precondition in headers is false.'),
-        413: ('Request Entity Too Large', 'Entity is too large.'),
-        414: ('Request-URI Too Long', 'URI is too long.'),
-        415: ('Unsupported Media Type', 'Entity body in unsupported format.'),
-        416: ('Requested Range Not Satisfiable',
-              'Cannot satisfy request range.'),
-        417: ('Expectation Failed',
-              'Expect condition could not be satisfied.'),
+    400: ('Bad Request',
+          'Bad request syntax or unsupported method'),
+    401: ('Unauthorized',
+          'No permission -- see authorization schemes'),
+    402: ('Payment Required',
+          'No payment -- see charging schemes'),
+    403: ('Forbidden',
+          'Request forbidden -- authorization will not help'),
+    404: ('Not Found', 'Nothing matches the given URI'),
+    405: ('Method Not Allowed',
+          'Specified method is invalid for this resource.'),
+    406: ('Not Acceptable', 'URI not available in preferred format.'),
+    407: ('Proxy Authentication Required', 'You must authenticate with '
+          'this proxy before proceeding.'),
+    408: ('Request Timeout', 'Request timed out; try again later.'),
+    409: ('Conflict', 'Request conflict.'),
+    410: ('Gone',
+          'URI no longer exists and has been permanently removed.'),
+    411: ('Length Required', 'Client must specify Content-Length.'),
+    412: ('Precondition Failed', 'Precondition in headers is false.'),
+    413: ('Request Entity Too Large', 'Entity is too large.'),
+    414: ('Request-URI Too Long', 'URI is too long.'),
+    415: ('Unsupported Media Type', 'Entity body in unsupported format.'),
+    416: ('Requested Range Not Satisfiable',
+          'Cannot satisfy request range.'),
+    417: ('Expectation Failed',
+          'Expect condition could not be satisfied.'),
 
-        500: ('Internal Server Error', 'Server got itself in trouble'),
-        501: ('Not Implemented',
-              'Server does not support this operation'),
-        502: ('Bad Gateway', 'Invalid responses from another server/proxy.'),
-        503: ('Service Unavailable',
-              'The server cannot process the request due to a high load'),
-        504: ('Gateway Timeout',
-              'The gateway server did not receive a timely response'),
-        505: ('HTTP Version Not Supported', 'Cannot fulfill request.'),
-        }
+    500: ('Internal Server Error', 'Server got itself in trouble'),
+    501: ('Not Implemented',
+          'Server does not support this operation'),
+    502: ('Bad Gateway', 'Invalid responses from another server/proxy.'),
+    503: ('Service Unavailable',
+          'The server cannot process the request due to a high load'),
+    504: ('Gateway Timeout',
+          'The gateway server did not receive a timely response'),
+    505: ('HTTP Version Not Supported', 'Cannot fulfill request.'),
+}
 
 
 def response_ok():
@@ -89,7 +87,7 @@ def response_error(err_code):
     response = 'HTTP/1.1 {0} {1}\r\n'
     response += 'Content-Type: text/plain\r\n'
     response += 'Date: ' + email.utils.formatdate(usegmt=True) + '\r\n'
-    return ''.join(response).format(err_code, responses[err_code])
+    return ''.join(response).format(err_code, responses[err_code][0])
 
 
 def main():
@@ -102,14 +100,16 @@ def set_address():
     address = ('127.0.0.1', 5000)
     return address
 
+
 def read_address():
-    """Reads back the current IP adress."""
+    """Read back the current IP adress."""
     return set_address()
 
+
 def read_hostname():
+    """Return host name of server object."""
     server = set_server()
     return server.gethostname()
-
 
 
 def set_server():
@@ -121,9 +121,12 @@ def set_server():
     return server
 
 
-def parse_request(message, conn):
+def parse_request(message):
+    """Validate that the request is well-formed if it is return the URI from the request."""
     requestline = message.rstrip('\r\n')
+    print(requestline)
     request_split = requestline.split()
+    print(request_split)
     command, path, version, host, host_name = request_split
     version_number = version.split('/', 1)[1]
     try:
@@ -157,16 +160,15 @@ def handle_message(conn, buffer_length):
             break
         else:
             print('Hold on, there is more...Receiving...')
-    full_message = message
     print('parsing request...')
     try:
-        response = parse_request(message.decode('utf8'), conn)
+        parse_request(message.decode('utf8'))
     except ValueError as e:
-        return(response_error(*e.args))
+        return response_error(*e.args)
     else:
-        # return response_ok().encode('utf8') + full_message
         print('Request OK')
-        return response
+        return response_ok().encode('utf8')
+
 
 def server():
     """Start the server binds the server to an address listens and accepts."""
@@ -189,7 +191,8 @@ def server():
             exit()
         print('Sending response... ')
         try:
-            conn.sendall(message.encode('utf8'))
+            print(message)
+            conn.sendall(message)
         except socket.error as se:
             print('Something went wrong when attempting to send to client:', se)
         print('Closing connection for: ', addr)
