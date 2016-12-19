@@ -4,9 +4,9 @@
 import socket
 import sys
 import os
-import email.utils
 import re
 from suprocess import call
+from threading import Thread
 
  content_type = {
             '.css': 'text/css',
@@ -247,6 +247,7 @@ def server():
         try:
             conn, addr = server.accept()
             print('Received a connection by: ', addr)
+            Thread(target = handle_message, args=(conn,), daemon = True).start()
             message = handle_message(conn, buffer_length)
         except KeyboardInterrupt:
             print('Shutting down...')
