@@ -11,9 +11,9 @@ setup(
     author_email='',
     license="MIT",
     package_dir={'': 'src'},
-    py_modules=['server', 'client'],
+    py_modules=['server', 'client', 'concurrent_server', "gevent"],
     extras_require={
-        "test": ["pytest", "pytest-watch", "pytest-cov", "tox"]
+        "test": ["pytest", "pytest-watch", "pytest-cov", "tox", "gevent"]
     },
     entry_points={
         "console_scripts": [
