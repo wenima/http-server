@@ -71,11 +71,41 @@ def parse_request_fixture():
     return parse_request
 
 
-def test_client():
-    """Test client to returns 200 ok response."""
+@pytest.fixture
+def client_fixture():
+    """Fixture for parse_request."""
     from client import client
-    split_message = client('GET /index.html HTTP/1.1\r\nHost: 127.0.0.1\r\n').split('\r\n')
+    return client
+
+
+def test_client_good_request(client_fixture):
+    """Test client to returns 200 ok response."""
+    split_message = client_fixture('GET /index.html HTTP/1.1\r\nHost: 127.0.0.1\r\n').split('\r\n')
     assert split_message[0] == 'HTTP/1.1 200 OK'
+
+
+def test_client_bad_request(client_fixture):
+    """Test client with bad request method."""
+    split_message = client_fixture('POST /index.html HTTP/1.1\r\nHost: 127.0.0.1\r\n').split('\r\n')
+    assert split_message[0] == 'HTTP/1.1 405 Method Not Allowed'
+
+
+def test_client_malformed_request(client_fixture):
+    """Test client with malformed request."""
+    split_message = client_fixture('GET /index.html HTTQ/1.1\r\nHost: 127.0.0.1\r\n').split('\r\n')
+    assert split_message[0] == 'HTTP/1.1 400 Bad Request'
+
+
+def test_client_bad_version(client_fixture):
+    """Test client with bad http version."""
+    split_message = client_fixture('GET /index.html HTTP/2.1\r\nHost: 127.0.0.1\r\n').split('\r\n')
+    assert split_message[0] == 'HTTP/1.1 505 HTTP Version Not Supported'
+
+
+def test_client_bad_host(client_fixture):
+    """Test client with bad host."""
+    split_message = client_fixture('GET /index.html HTTP/1.1\r\nHost: 127.3.6.1\r\n').split('\r\n')
+    assert split_message[0] == 'HTTP/1.1 400 Bad Request'
 
 
 def test_server_response_ok():

@@ -191,8 +191,11 @@ def server():
             exit()
         print('Sending response... ')
         try:
+            try:
+                conn.sendall(message.encode('utf8'))
+            except AttributeError:
+                conn.sendall(message)
             print(message)
-            conn.sendall(message)
         except socket.error as se:
             print('Something went wrong when attempting to send to client:', se)
         print('Closing connection for: ', addr)
