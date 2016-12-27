@@ -44,8 +44,7 @@ def handle_message(conn, buffer_length):
     """Handle the messages coming into the server."""
     conn.setblocking(1)
     message = b''
-    message_complete = False
-    while not message_complete:
+    while True:
         part = conn.recv(buffer_length)
         message += part
         print('Receiving message from client...')
@@ -53,7 +52,6 @@ def handle_message(conn, buffer_length):
         print(message[-2:])
         if len(part) < buffer_length or part[-2:] == b'\r\n':
             print('setting message to complete: ')
-            message_complete = True
             break
         else:
             print('Hold on, there is more...Receiving...')
