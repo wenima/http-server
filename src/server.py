@@ -7,6 +7,9 @@ import os
 import datetime
 
 
+address = ('127.0.0.1', 5000)
+
+
 def response_ok():
     """Return a well formed HTTP 200 OK response."""
     response = 'HTTP/1.1 200 OK\r\n'
@@ -26,12 +29,6 @@ def response_error():
 def main():
     """Call server."""
     server()
-
-
-def set_address():
-    """Set the adress."""
-    address = ('127.0.0.1', 5000)
-    return address
 
 
 def set_server():
@@ -72,7 +69,6 @@ def server():
     """Start the server binds the server to an address listens and accepts."""
     print('entering server')
     buffer_length = 8
-    address = set_address()
     server = set_server()
     server.bind(address)
     server.listen(1)
