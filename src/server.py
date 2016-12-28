@@ -8,6 +8,7 @@ import datetime
 
 
 address = ('127.0.0.1', 5000)
+buffer_length = 8
 
 
 def response_ok():
@@ -65,7 +66,6 @@ def handle_message(conn, buffer_length):
 def server():
     """Start the server binds the server to an address listens and accepts."""
     print('entering server')
-    buffer_length = 8
     server = set_server()
     server.bind(address)
     server.listen(1)
