@@ -57,8 +57,8 @@ def handle_message(conn, buffer_length):
             print('Hold on, there is more...Receiving...')
     full_message = b''.join(message)
     print('return message: ', full_message)
-    if full_message == 'error':
-        return response_error()
+    if full_message[:5] == b'error':
+        return response_error().encode('utf8')
     else:
         return response_ok().encode('utf8') + full_message
 
