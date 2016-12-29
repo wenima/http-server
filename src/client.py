@@ -34,7 +34,6 @@ def client(message):
             break
         part = client.recv(buffer_length)
         if part:
-            # server_message += part
             server_message.append(part)
             print('Receiving message from server...')
             print(part)
