@@ -7,6 +7,9 @@ import os
 import email.utils
 
 
+buffer_length = 1024
+address = ('127.0.0.1', 5000)
+
 responses = {
     100: ('Continue', 'Request received, please continue'),
     101: ('Switching Protocols',
@@ -95,32 +98,6 @@ def main():
     server()
 
 
-def set_address():
-    """Set the adress."""
-    address = ('127.0.0.1', 5000)
-    return address
-
-
-def read_address():
-    """Read back the current IP adress."""
-    return set_address()
-
-
-def read_hostname():
-    """Return host name of server object."""
-    server = set_server()
-    return server.gethostname()
-
-
-def set_server():
-    """Instantiate the socket object."""
-    server = socket.socket(socket.AF_INET,
-                           socket.SOCK_STREAM,
-                           socket.IPPROTO_TCP)
-    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    return server
-
-
 def parse_request(message):
     """Validate that the request is well-formed if it is return the URI from the request."""
     requestline = message.rstrip('\r\n')
@@ -136,7 +113,7 @@ def parse_request(message):
             raise ValueError(400)
         elif len(version_number) != 3 or version_number != '1.1':
                 raise ValueError(505)
-        if host != 'Host:' or host_name != read_address()[0]:
+        if host != 'Host:' or host_name != address[0]:
             raise ValueError(400)
     except ValueError:
         raise
@@ -170,15 +147,23 @@ def handle_message(conn, buffer_length):
         return response_ok().encode('utf8')
 
 
-def server():
-    """Start the server binds the server to an address listens and accepts."""
+def initialize_connection():
+    """Set up a socket a connection and return socket object."""
+    server = socket.socket(socket.AF_INET,
+                           socket.SOCK_STREAM,
+                           socket.IPPROTO_TCP)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     print('entering server')
-    buffer_length = 1024
-    address = set_address()
-    server = set_server()
     server.bind(address)
     server.listen(1)
     print('listening on: ', address)
+    return server
+
+
+def server():
+    """Start the server to listen and accept http requests."""
+    server = initialize_connection()
+
     while True:
         try:
             conn, addr = server.accept()
@@ -190,6 +175,7 @@ def server():
             server.close()
             exit()
         print('Sending response... ')
+
         try:
             try:
                 conn.sendall(message.encode('utf8'))
