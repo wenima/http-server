@@ -2,8 +2,6 @@
 """Small localtcp/ip server to host connections from local client."""
 
 import socket
-import sys
-import os
 import datetime
 
 
@@ -123,26 +121,26 @@ def parse_request(message):
 def handle_message(conn, buffer_length):
     """Handle the messages coming into the server."""
     conn.setblocking(1)
-    message = b''
+    message = []
     while True:
         part = conn.recv(buffer_length)
-        message += part
+        message.append(part)
         print('Receiving message from client...')
         print('consuming: ', len(part))
-        print(message.decode('utf8'))
         if len(part) < buffer_length or part[-2:] == b'\r\n':
             print('setting message to complete: ')
             break
         else:
             print('Hold on, there is more...Receiving...')
     print('parsing request...')
+
+    full_message = b''.join(message)
     try:
-        parse_request(message.decode('utf8'))
-    except ValueError as e:
-        return response_error(*e.args)
-    else:
+        parse_request(full_message.decode('utf8'))
         print('Request OK')
         return response_ok().encode('utf8')
+    except ValueError as e:
+        return response_error(*e.args).encode('utf8')
 
 
 def initialize_connection():
@@ -168,17 +166,17 @@ def server():
             print('Received a connection by: ', addr)
             message = handle_message(conn, buffer_length)
         except KeyboardInterrupt:
-            print('Shutting down...')
-            conn.close()
+            print('\n\nShutting Down Server...')
+            try:
+                conn.close()
+            except UnboundLocalError:
+                pass
             server.close()
             exit()
         print('Sending response... ')
 
         try:
-            try:
-                conn.sendall(message.encode('utf8'))
-            except AttributeError:
-                conn.sendall(message)
+            conn.sendall(message)
             print(message)
         except socket.error as se:
             print('Something went wrong when attempting to send to client:', se)
@@ -189,12 +187,4 @@ def server():
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except KeyboardInterrupt:
-        print('Keyboard interrupted, shutting down server...')
-        server.close()
-        try:
-            sys.exit(0)
-        except SystemExit:
-            os.exit(0)
+    main()
