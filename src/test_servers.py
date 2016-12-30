@@ -4,22 +4,6 @@
 
 import pytest
 
-# MESSAGES = [
-#     ['', ''],
-#     ['¥mes¢sage', '¥mes¢sage'],
-#     ['message', 'message'],
-#     ['qwertyuiopasdfgh', 'qwertyuiopasdfgh'],
-#     ['qwertyui', 'qwertyui']
-# ]
-
-
-# @pytest.mark.parametrize('message, output', MESSAGES)
-# def test_client(message, output):
-#     """Test client to returns same messages it got."""
-#     from client import client
-#     split_message = client(message).split('\r\n')
-#     assert split_message[-2] == output
-
 
 RESPONSE_ERROR = [
     [201, 'Created'],
