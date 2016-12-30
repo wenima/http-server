@@ -53,4 +53,6 @@ def client(message):
 
 if __name__ == '__main__':
     message = sys.argv[1]
+    if "\\r\\n" in message:
+                message = message.replace("\\r\\n", "\r\n")
     print(client(message))
