@@ -2,19 +2,25 @@
 """Local TCP/IP client to send/receive messages to local server."""
 
 import socket
-import time
 import sys
 
 
 buffer_length = 8
 
 
-def client(message):
-    """Send a message to the local server echos back the same message."""
+def initialize_connection():
+    """A."""
     infos = socket.getaddrinfo('127.0.0.1', 5000)
     stream_info = [i for i in infos if i[1] == socket.SOCK_STREAM][0]
     client = socket.socket(*stream_info[:3])
     client.connect(stream_info[-1])
+    return client
+
+
+def client(message):
+    """Send a message to the local server echos back the same message."""
+    client = initialize_connection()
+
     print('sending the following message:',
           message, 'to server at: ',
           socket.gethostbyname('127.0.0.1'))
@@ -22,33 +28,21 @@ def client(message):
         client.sendall(message.encode('utf8') + b'\r\n')
     else:
         client.sendall(message + b'\r\n')
-    reply_complete = False
-    server_message = b''
-    begin = time.time()
-    timeout = 2
-    time.sleep(0.1)
-    while not reply_complete:
-        if message and time.time() - begin > timeout:
-            break
-        elif time.time() - begin > timeout * 2:
-            break
+
+    server_message = []
+    while True:
         part = client.recv(buffer_length)
         if part:
-            server_message += part
+            server_message.append(part)
             print('Receiving message from server...')
             print(part)
-            begin = time.time()
-            time.sleep(0.1)
-        if len(part) < buffer_length:
+        if len(part) < buffer_length or part[-2:] == b'\r\n':
             break
         else:
             print('Hold on, there is more...Receiving...')
     client.close()
     print('\n')
-    if sys.version[0] == '3':
-        return str(server_message, 'utf8')
-    else:
-        return str(server_message)
+    return b''.join(server_message).decode('utf8')
 
 
 if __name__ == '__main__':
