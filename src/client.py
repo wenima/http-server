@@ -9,7 +9,7 @@ buffer_length = 8
 
 
 def initialize_connection():
-    """A."""
+    """Set up a socket a connection and return socket object."""
     infos = socket.getaddrinfo('127.0.0.1', 5000)
     stream_info = [i for i in infos if i[1] == socket.SOCK_STREAM][0]
     client = socket.socket(*stream_info[:3])
@@ -18,7 +18,7 @@ def initialize_connection():
 
 
 def client(message):
-    """Send a message to the local server echos back the same message."""
+    """Send a http request to the local server and return http response."""
     client = initialize_connection()
 
     print('sending the following message:',
